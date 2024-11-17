@@ -1,9 +1,12 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 function createPage(pageName, fileType) {
   const extension = fileType === "tsx" ? "ts" : "js";
-  const pageDir = path.join(__dirname, "../src", "page", pageName);
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const pageDir = path.join(__dirname, "../src", "pages", pageName);
   const pageFile = path.join(pageDir, `${pageName}.${fileType}`);
   const styleFile = path.join(pageDir, `styles.${extension}`);
 
@@ -38,13 +41,11 @@ const pageName = process.argv[2];
 const fileType = process.argv[3] || "tsx";
 
 if (!pageName) {
-  return console.log(
+  console.log(
     "Por favor, forneça o nome do componente: node createPage.js NomeDoComponente [jsx|tsx]"
   );
+} else if (!["tsx", "jsx"].includes(fileType)) {
+  console.log('Tipo de arquivo inválido. Use "jsx" ou "tsx".');
+} else {
+  createPage(pageName, fileType);
 }
-
-if (!["tsx", "jsx"].includes(fileType)) {
-  return console.log('Tipo de arquivo inválido. Use "jsx" ou "tsx".');
-}
-
-createPage(pageName, fileType);

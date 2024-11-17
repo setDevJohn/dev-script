@@ -1,8 +1,11 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 function createComponent(componentName, fileType) {
   const extension = fileType === "tsx" ? "ts" : "js";
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
   const componentDir = path.join(
     __dirname,
     "../src",
@@ -43,13 +46,11 @@ const componentName = process.argv[2];
 const fileType = process.argv[3] || "tsx";
 
 if (!componentName) {
-  return console.log(
+  console.log(
     "Por favor, forneça o nome do componente: node createComponent.js NomeDoComponente [jsx|tsx]"
   );
+} else if (!["tsx", "jsx"].includes(fileType)) {
+  console.log('Tipo de arquivo inválido. Use "jsx" ou "tsx".');
+} else {
+  createComponent(componentName, fileType);
 }
-
-if (!["tsx", "jsx"].includes(fileType)) {
-  return console.log('Tipo de arquivo inválido. Use "jsx" ou "tsx".');
-}
-
-createComponent(componentName, fileType);
